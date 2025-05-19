@@ -1,0 +1,50 @@
+# Cursor Rules: Autocomplete Component
+
+## Project Patterns
+- Component files use PascalCase (e.g., `AutocompleteInput.tsx`)
+- Hooks use camelCase with 'use' prefix (e.g., `useAutocomplete.ts`)
+- Utility files use camelCase (e.g., `apiService.ts`)
+- Test files use the same name as the file they test with a `.test.ts` suffix
+- Components are organized by feature/responsibility
+
+## Code Style Preferences
+- Use functional components with hooks
+- Prefer explicit typing over inferred types
+- Use destructuring for props
+- Use meaningful variable and function names
+- Keep components focused on a single responsibility
+- Add JSDoc comments for functions and components
+
+## Configuration Patterns
+- **Module Syntax**: This project uses ES modules. Configuration files must use ES module syntax:
+  - Use `export default {}` instead of `module.exports = {}`
+  - This applies to postcss.config.js, tailwind.config.js, and other config files
+  - Vite projects with `"type": "module"` in package.json require this syntax
+- **Tailwind CSS**: 
+  - Use `@tailwindcss/postcss` package for the PostCSS plugin, not `tailwindcss` directly
+  - PostCSS configuration should use `'@tailwindcss/postcss': {}` in the plugins section
+
+## API Integration Patterns
+- Use a dedicated service for API calls
+- Implement proper error handling
+- Use debouncing for input-driven API calls
+- Consider caching for performance optimization
+
+## State Management
+- Use React's useState and useReducer for local state
+- Lift state up when needed for shared state
+- Use custom hooks to encapsulate related state and logic
+
+## UI/UX Patterns
+- Follow iOS-inspired design for autocomplete suggestions
+- Implement keyboard navigation for accessibility
+- Highlight matching text in suggestions
+- Show loading states during API calls
+- Handle empty states gracefully
+
+## Testing Approach
+- Write unit tests for hooks and utilities
+- Write component tests for UI behavior
+- Test edge cases (empty input, API errors, etc.)
+
+This file will be updated as we discover more patterns and preferences during development. 
