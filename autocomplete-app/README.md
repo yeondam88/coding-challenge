@@ -1,54 +1,123 @@
-# React + TypeScript + Vite
+# Word Autocomplete UI Component
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React + TypeScript application that provides a user interface for word autocomplete functionality. Users can type into an input field, and the application will fetch and display word suggestions from an API. Selected suggestions are logged to the console.
 
-Currently, two official plugins are available:
+## Key Functionalities
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **Real-time Suggestions**: Fetches and displays word suggestions as the user types.
+*   **Debounced API Calls**: API calls are debounced to prevent excessive requests while typing.
+*   **Keyboard Navigation**: Users can navigate suggestions using Arrow Up/Down keys, select with Enter, and dismiss with Escape.
+*   **Click Selection**: Users can select suggestions by clicking on them.
+*   **Clear Input**: A button to quickly clear the input field.
+*   **Highlight Matching Text**: The portion of the suggestions matching the input query is highlighted.
+*   **Loading & Error States**: Displays appropriate messages during API call loading or if an error occurs.
+*   **No Results Message**: Informs the user if no suggestions are found for their query.
+*   **Console Logging**: Logs the selected word to the browser console, fulfilling a key PRD requirement.
 
-## Expanding the ESLint configuration
+## Application Flow
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```mermaid
+flowchart TD
+    A[User types in AutocompleteInput] --> B{useAutocomplete Hook};
+    B -- Debounced Input --> C[apiService: fetchSuggestions];
+    C -- API Call --> D[External API: /api/words];
+    D -- Raw Suggestions --> C;
+    C -- Formatted Suggestions/Error --> B;
+    B -- Updates State (suggestions, loading, error, selectedIndex, isOpen) --> E[AutocompleteInput UI Re-renders];
+    E --> F(SuggestionsList Displays List or Messages);
+    F -- Iterates Suggestions --> G[SuggestionItem Renders Each Suggestion];
+    G -- Uses utility --> H(highlightText Utility);
+    H -- Returns Highlighted JSX --> G;
+    
+    subgraph User Interaction with Suggestions
+        I[User Navigates with Keyboard] --> B;
+        J[User Clicks SuggestionItem] --> K{handleSelectSuggestion in useAutocomplete};
+    end
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+    B -- Arrow Keys Update selectedIndex --> E;
+    K -- Sets InputValue, Closes List --> B;
+    K -- Logs to Console --> L[Browser Console: Selected Word];
+    E -- Clear Button Click --> B; 
+    B -- Clears inputValue --> E;
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+*   **React 19**
+*   **TypeScript**
+*   **Vite**: For fast development and optimized builds.
+*   **CSS**: Custom CSS for styling (`App.css`, `AutocompleteInput.css`).
+*   **Vitest**: For unit and integration testing.
+*   **React Testing Library**: For testing React components.
+*   **ESLint**: For code linting.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## Project Structure
+
 ```
+autocomplete-app/
+├── public/                  # Static assets
+├── src/
+│   ├── assets/              # Image/font assets
+│   ├── components/          # React UI components (AutocompleteInput, SuggestionItem, SuggestionsList)
+│   ├── hooks/               # Custom React hooks (useAutocomplete)
+│   ├── services/            # API service layer (apiService)
+│   ├── utils/               # Utility functions (highlightText)
+│   ├── App.css              # Main app styles
+│   ├── App.tsx              # Main application component
+│   ├── main.tsx             # Application entry point
+│   ├── index.css            # Global styles
+│   └── setupTests.ts        # Test setup for Vitest
+├── .eslintrc.cjs            # ESLint configuration
+├── .gitignore
+├── index.html               # Main HTML page
+├── package.json
+├── tsconfig.json            # TypeScript configuration
+├── tsconfig.node.json       # TypeScript configuration for Node
+├── vite.config.ts           # Vite configuration
+├── vitest.config.ts         # Vitest configuration
+└── README.md                # This file
+```
+
+## Available Scripts
+
+In the `autocomplete-app` directory, you can run the following scripts:
+
+### `npm run dev`
+
+Runs the app in development mode.
+Open [http://localhost:5173](http://localhost:5173) (or the port shown in your terminal) to view it in the browser.
+The page will reload if you make edits.
+
+### `npm run build`
+
+Builds the app for production to the `dist` folder.
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+### `npm run lint`
+
+Lints the codebase using ESLint.
+
+### `npm run preview`
+
+Serves the production build locally to preview it.
+
+### `npm run test`
+
+Runs the unit tests using Vitest in watch mode by default (as per original `vitest` script, changed to `vitest run` for single execution). Consider `npm run test:watch` for interactive watch mode.
+*   `npm run test`: Executes tests once.
+*   `npm run test:watch`: Runs tests in interactive watch mode.
+
+## Setup
+
+1.  Navigate to the `autocomplete-app` directory:
+    ```bash
+    cd autocomplete-app
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  To start the development server:
+    ```bash
+    npm run dev
+    ```
